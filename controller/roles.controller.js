@@ -60,8 +60,8 @@ const rolesController = {
     }, 
     delete: async (req, res) => {
         try {
-            const { roleID } = req.params
-            const [rows, fields] = await pool.query("delete from roles where roleID = ?", [roleID])
+            const { id } = req.params
+            const [rows, fields] = await pool.query("delete from roles where roleID = ?", [id])
             res.json({
                 data: rows
             })
