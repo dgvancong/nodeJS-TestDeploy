@@ -16,6 +16,4 @@ app.use("/api/roles", rolesRouter)
 
 //Cổng chạy app
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
-    console.log("Server is running....")
-})
+app.listen(PORT, () => {console.log("Server is running....")})

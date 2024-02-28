@@ -15,8 +15,8 @@ const rolesController = {
     },
     getById: async (req, res) => {
         try {
-            const { roleID } = req.params
-            const [rows, fields] = await pool.query("select * from roles where roleID = ?", [roleID])
+            const { id } = req.params
+            const [rows, fields] = await pool.query("select * from roles where roleID = ?", [id])
             res.json({
                 data: rows
             })
