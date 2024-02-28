@@ -15,8 +15,8 @@ const rolesController = {
     },
     getById: async (req, res) => {
         try {
-            const { rolesID } = req.params
-            const [rows, fields] = await pool.query("select * from roles where rolesID = ?", [rolesID])
+            const { roleID } = req.params
+            const [rows, fields] = await pool.query("select * from roles where roleID = ?", [roleID])
             res.json({
                 data: rows
             })
@@ -45,9 +45,9 @@ const rolesController = {
     update: async (req, res) => {
         try {
             const { title, content } = req.body
-            const { rolesID } = req.params
-            const sql = "update posts set title = ?, content = ? where rolesID = ?"
-            const [rows, fields] = await pool.query(sql, [title, content, rolesID])
+            const { roleID } = req.params
+            const sql = "update posts set title = ?, content = ? where roleID = ?"
+            const [rows, fields] = await pool.query(sql, [title, content, roleID])
             res.json({
                 data: rows
             })
@@ -60,8 +60,8 @@ const rolesController = {
     }, 
     delete: async (req, res) => {
         try {
-            const { rolesID } = req.params
-            const [rows, fields] = await pool.query("delete from roles where rolesID = ?", [rolesID])
+            const { roleID } = req.params
+            const [rows, fields] = await pool.query("delete from roles where roleID = ?", [roleID])
             res.json({
                 data: rows
             })
