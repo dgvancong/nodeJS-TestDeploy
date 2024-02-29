@@ -22,8 +22,8 @@ app.use("/roles", rolesRouter)
 // const notificationsRouter = require('./routes/notifications-routes')
 // app.use("/notifications", notificationsRouter)
 
-// const projectRouter = require('./routes/project-routes')
-// app.use("/project", projectRouter)
+const projectRouter = require('./routes/project-routes')
+app.use("/project", projectRouter)
 
 // const taskRouter = require('./routes/task-routes')
 // app.use("/task", taskRouter)
