@@ -2,7 +2,14 @@ const pool = require("../database/dbConnect")
 const projectController = {
     getAll: async (req, res) => {
         try {
-            const [rows, fields] = await pool.query("select * from roles")
+            const [rows, fields] = await pool.query(`SELECT project.*, projectDetails.*,
+            user.fullName AS leadFullName ,
+            user.picture AS imgUser ,
+           team.teamName AS teamFullName
+           FROM project
+           LEFT JOIN projectDetails ON project.projectID = projectDetails.projectID
+           LEFT JOIN Users AS user ON projectDetails.userID = user.userID
+           LEFT JOIN Team AS team ON projectDetails.teamID = team.teamID`)
             res.json({
                 data: rows
             })
