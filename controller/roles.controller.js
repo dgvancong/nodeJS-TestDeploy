@@ -29,9 +29,9 @@ const rolesController = {
     },
     create: async (req, res) => {
         try {
-            const { title, content } = req.body
-            const sql = "insert into roles (title, content) values (?, ?)"
-            const [rows, fields] = await pool.query(sql, [title, content])
+            const { roleName } = req.body
+            const sql = "insert into roles (roleName) values (?)"
+            const [rows, fields] = await pool.query(sql, [roleName])
             res.json({
                 data: rows
             })
@@ -44,10 +44,10 @@ const rolesController = {
     },
     update: async (req, res) => {
         try {
-            const { title, content } = req.body
-            const { roleID } = req.params
-            const sql = "update posts set title = ?, content = ? where roleID = ?"
-            const [rows, fields] = await pool.query(sql, [title, content, roleID])
+            const { roleName } = req.body
+            const { id } = req.params
+            const sql = "update roles set roleName = ? where roleID = ?"
+            const [rows, fields] = await pool.query(sql, [roleName, id])
             res.json({
                 data: rows
             })
