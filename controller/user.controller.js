@@ -49,36 +49,8 @@ const userController = {
             })
         }
     },
-    update: async (req, res) => {
-        try {
-            const { roleName } = req.body
-            const { id } = req.params
-            const sql = "update roles set roleName = ? where roleID = ?"
-            const [rows, fields] = await pool.query(sql, [roleName, id])
-            res.json({
-                data: rows
-            })
-        } catch (error) {
-            console.log(error)
-            res.json({
-                status: "error"
-            })
-        }
-    }, 
-    delete: async (req, res) => {
-        try {
-            const { id } = req.params
-            const [rows, fields] = await pool.query("delete from roles where roleID = ?", [id])
-            res.json({
-                data: rows
-            })
-        } catch (error) {
-            console.log(error)
-            res.json({
-                status: "error"
-            })
-        }
-    }
+    
+    
 
 }
 
