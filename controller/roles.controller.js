@@ -30,10 +30,11 @@ const rolesController = {
     create: async (req, res) => {
         try {
             const { roleName } = req.body
-            const sql = "insert into roles (roleName) values (?)"
+            const sql = "INSERT INTO roles (roleName, create_at, updated_at) values (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
             const [rows, fields] = await pool.query(sql, [roleName])
             res.json({
-                data: rows
+                data: rows,
+                status: "Thêm nội dung quyền thành công"
             })
         } catch (error) {
             console.log(error)
