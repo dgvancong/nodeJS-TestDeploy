@@ -2,21 +2,21 @@ const pool = require("../database/dbConnect")
 const teamController = {
     getAll: async (req, res) => {
         try {
-            const [rows, fields] = await pool.query("select * from roles")
+            const [rows, fields] = await pool.query("select * from Team")
             res.json({
                 data: rows
             })
         } catch (error) {
             console.log(error)
             res.json({
-                status: "error"
+                status: "Lỗi dữ liệu bảng Team"
             })
         }
     },
     getById: async (req, res) => {
         try {
             const { id } = req.params
-            const [rows, fields] = await pool.query("select * from roles where roleID = ?", [id])
+            const [rows, fields] = await pool.query("select * from Team where teamID = ?", [id])
             res.json({
                 data: rows
             })
