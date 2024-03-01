@@ -13,25 +13,25 @@ const userController = {
                 status: "Lỗi dữ liệu của người dùng !!!"
             })
         }
+    },
+    getById: async (req, res) => {
+        try {
+            const { id } = req.params
+            const [rows, fields] = await pool.query(`
+            SELECT Users.*, roles.roleName
+            FROM Users
+            JOIN roles ON Users.roleID = roles.roleID
+            WHERE Users.userID = ?`, [id])
+            res.json({
+                data: rows
+            })
+        } catch (error) {
+            console.log(error)
+            res.json({
+                status: "Không tìm thấy người dùng !!!"
+            })
+        }
     }
-    // getById: async (req, res) => {
-    //     try {
-    //         const { id } = req.params
-    //         const [rows, fields] = await pool.query(`
-    //         SELECT Users.*, roles.roleName
-    //         FROM Users
-    //         JOIN roles ON Users.roleID = roles.roleID
-    //         WHERE Users.userID = ?`, [id])
-    //         res.json({
-    //             data: rows
-    //         })
-    //     } catch (error) {
-    //         console.log(error)
-    //         res.json({
-    //             status: "Không tìm thấy người dùng !!!"
-    //         })
-    //     }
-    // }
     // create: async (req, res) => {
     //     try {
     //         const { picture, fullName, password, emailAddress, phoneNumber, roleID } = req.body;
