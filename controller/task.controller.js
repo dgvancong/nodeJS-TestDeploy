@@ -57,7 +57,7 @@ const taskController = {
                 status: "error"
             })
         }
-    }, 
+    },
     delete: async (req, res) => {
         try {
             const { id } = req.params
