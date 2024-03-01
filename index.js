@@ -31,8 +31,8 @@ app.use("/project", projectRouter)
 // const teamRouter = require('./routes/team-routes')
 // app.use("/team", teamRouter)
 
-const userRouter = require('./routes/user-routes')
-app.use("/user", userRouter)
+// const userRouter = require('./routes/user-routes')
+// app.use("/user", userRouter)
 
 //Cổng chạy app
 const PORT = process.env.PORT || 5000
