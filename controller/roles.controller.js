@@ -38,7 +38,7 @@ const rolesController = {
         } catch (error) {
             console.log(error)
             res.json({
-                status: "error"
+                status: "Lỗi khi thêm vị trí chức vụ, Quyền hạn"
             })
         }
     },
