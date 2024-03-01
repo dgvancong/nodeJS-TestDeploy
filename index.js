@@ -28,8 +28,8 @@ app.use("/project", projectRouter)
 // const taskRouter = require('./routes/task-routes')
 // app.use("/task", taskRouter)
 
-// const teamRouter = require('./routes/team-routes')
-// app.use("/team", teamRouter)
+const teamRouter = require('./routes/team-routes')
+app.use("/team", teamRouter)
 
 const userRouter = require('./routes/user-routes')
 app.use("/user", userRouter)
