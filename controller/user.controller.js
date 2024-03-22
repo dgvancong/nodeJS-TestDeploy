@@ -33,9 +33,9 @@ const userController = {
     },
     create: async (req, res) => {
         try {
-            const { picture, fullName, password, emailAddress, phoneNumber, roleID } = req.body;
-            const sql = "INSERT INTO Users (picture, fullName, password, emailAddress, phoneNumber, roleID, lastLogin, createdDate) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
-            const [rows, fields] = await pool.query(sql, [picture, fullName, password, emailAddress, phoneNumber, roleID])
+            const { picture, fullName, passwordHash, emailAddress, phoneNumber, roleID } = req.body;
+            const sql = "INSERT INTO Users (picture, fullName, passwordHash, emailAddress, phoneNumber, roleID, lastLogin, createdDate) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
+            const [rows, fields] = await pool.query(sql, [picture, fullName, passwordHash, emailAddress, phoneNumber, roleID])
             res.json({
                 data: rows
             })
