@@ -1,5 +1,4 @@
 const pool = require("../database/dbConnect")
-const bcrypt = require('bcrypt');
 const userController = {
     getAll: async (req, res) => {
         try {
@@ -32,7 +31,6 @@ const userController = {
             })
         }
     },
-
     create: async (req, res) => {
         try {
             const { picture, fullName, password, emailAddress, phoneNumber, roleID } = req.body;
