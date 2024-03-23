@@ -1,5 +1,6 @@
 const pool = require("../database/dbConnect")
 const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userController = {
     getAll: async (req, res) => {
@@ -50,6 +51,44 @@ const userController = {
             });
         }
     },
+    login: async (req, res) => {
+        try {
+            const { emailAddress, password } = req.body;
+            const query = "SELECT * FROM Users WHERE emailAddress = ?";
+            db.query(query, [emailAddress], async (err, results) => {
+                if (err) {
+                    console.error('Error executing query:', err);
+                    res.status(500).json({ success: false, message: 'Error executing query', details: err.message });
+                } else {
+                    if (results.length > 0) {
+                        const user = results[0];
+                        const passwordMatch = await bcryptjs.compare(password, user.passwordHash);
+                        if (passwordMatch) {
+                            const token = jwt.sign({ userID: user.userID, emailAddress: user.emailAddress }, 'your-secret-key', { expiresIn: '1h' });
+                            const userData = {
+                                userID: user.userID,
+                                picture: user.picture,
+                                fullName: user.fullName,
+                                emailAddress: user.emailAddress,
+                                phoneNumber: user.phoneNumber,
+                                roleID: user.roleID,
+                                lastLogin: user.lastLogin,
+                                createdDate: user.createdDate,
+                            };
+                            res.json({ success: true, message: 'Login successful', token, user: userData, userID: user.userID });
+                        } else {
+                            res.status(401).json({ success: false, message: 'Incorrect email or password' });
+                        }
+                    } else {
+                        res.status(401).json({ success: false, message: 'Incorrect email or password' });
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error during login:', error);
+            res.status(500).json({ success: false, message: 'Error during login', details: error.message });
+        }
+    },
     delete: async (req, res) => {
         try {
             const { id } = req.params
@@ -64,8 +103,8 @@ const userController = {
             })
         }
     }
-    
-    
+
+
 
 }
 
