@@ -34,7 +34,7 @@ const rolesController = {
             const [rows, fields] = await pool.query(sql, [roleName])
             res.json({
                 data: rows,
-                status: "Thêm thêm vị trí chức vụ, Quyền hạn thành công"
+                status: "Thêm vị trí chức vụ, Quyền hạn thành công"
             })
         } catch (error) {
             console.log(error)

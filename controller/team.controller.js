@@ -34,42 +34,42 @@ const teamController = {
             const [rows, fields] = await pool.query(sql, [teamName])
             res.json({
                 data: rows,
-                status: "Thêm thêm vị trí chức vụ, Quyền hạn thành công"
+                status: "Thêm nhóm hoạt động thành công"
             })
         } catch (error) {
             console.log(error)
             res.json({
-                status: "Lỗi khi thêm vị trí chức vụ, Quyền hạn"
+                status: "Lỗi khi thêm nhóm hoạt động thành công"
             })
         }
     },
     update: async (req, res) => {
         try {
-            const { roleName } = req.body
+            const { teamName } = req.body
             const { id } = req.params
-            const sql = "UPDATE roles SET roleName = ? WHERE roleID = ?"
-            const [rows, fields] = await pool.query(sql, [roleName, id])
+            const sql = "UPDATE Team SET teamName = ? WHERE teamID = ?"
+            const [rows, fields] = await pool.query(sql, [teamName, id])
             res.json({
                 data: rows
             })
         } catch (error) {
             console.log(error)
             res.json({
-                status: "Lỗi khi cập nhật lại dữ liệu nhóm"
+                status: "Lỗi cập nhật vị trí chức vụ, Quyền hạn"
             })
         }
-    }, 
+    },
     delete: async (req, res) => {
         try {
             const { id } = req.params
-            const [rows, fields] = await pool.query("DELETE FROM roles WHERE roleID = ?", [id])
+            const [rows, fields] = await pool.query("DELETE FROM Team WHERE teamID = ?", [id])
             res.json({
                 data: rows
             })
         } catch (error) {
             console.log(error)
             res.json({
-                status: "Lỗi khi xóa dữ liệu nhóm"
+                status: "Lỗi khi xóa vị trí chức vụ, Quyền hạn"
             })
         }
     }
