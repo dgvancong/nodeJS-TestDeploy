@@ -46,31 +46,28 @@ const teamController = {
     groupMember: async (req, res) => {
         try {
             const { teamID, userID, joinDate } = req.body;
+            
+            // Truy vấn vai trò của người dùng
             const getRoleQuery = `SELECT u.roleID, r.roleName FROM Users u JOIN roles r ON u.roleID = r.roleID WHERE u.userID = ?`;
-            pool.query(getRoleQuery, [userID], (roleErr, roleResult) => {
-                if (roleErr) {
-                    console.error('Lỗi trong quá trình truy vấn vai trò:', roleErr);
-                    return res.status(500).json({ error: 'Đã xảy ra lỗi khi truy vấn vai trò của người dùng' });
-                }
-                if (roleResult.length > 0) {
-                    const { roleID, roleName } = roleResult[0];
-                    const addMemberQuery = `INSERT INTO TeamMembers (teamID, userID, roleID, joinDate) VALUES (?, ?, ?, ?)`;
-                    pool.query(addMemberQuery, [teamID, userID, roleID, joinDate], (err, result) => {
-                        if (err) {
-                            console.error('Lỗi trong quá trình thêm thành viên vào nhóm:', err);
-                            return res.status(500).json({ error: 'Đã xảy ra lỗi khi thêm thành viên vào nhóm' });
-                        }
-                        return res.json({ message: 'Thêm thành viên vào nhóm thành công', roleName });
-                    });
-                } else {
-                    return res.status(404).json({ error: 'Không tìm thấy vai trò của người dùng' });
-                }
-            });
+            const roleResult = await pool.query(getRoleQuery, [userID]);
+    
+            if (roleResult.length > 0) {
+                const { roleID, roleName } = roleResult[0];
+    
+                // Thêm thành viên vào nhóm
+                const addMemberQuery = `INSERT INTO TeamMembers (teamID, userID, roleID, joinDate) VALUES (?, ?, ?, ?)`;
+                await pool.query(addMemberQuery, [teamID, userID, roleID, joinDate]);
+    
+                return res.json({ message: 'Thêm thành viên vào nhóm thành công', roleName });
+            } else {
+                return res.status(404).json({ error: 'Không tìm thấy vai trò của người dùng' });
+            }
         } catch (error) {
             console.error('Lỗi trong quá trình xử lý:', error);
-            res.status(500).json({ error: 'Đã xảy ra lỗi trong quá trình xử lý' });
+            return res.status(500).json({ error: 'Đã xảy ra lỗi trong quá trình xử lý' });
         }
-    },
+    }
+    
     
     update: async (req, res) => {
         try {
