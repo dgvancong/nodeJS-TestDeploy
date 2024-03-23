@@ -54,37 +54,47 @@ const userController = {
     login: async (req, res) => {
         try {
             const { emailAddress, password } = req.body;
-            const query = "SELECT * FROM Users WHERE emailAddress = ?";
-            pool.query(query, [emailAddress], async (err, results) => {
-                if (err) {
-                    console.error('Error executing query:', err);
-                } else {
-                    if (results.length > 0) {
-                        const user = results[0];
-                        const passwordMatch = await bcryptjs.compare(password, user.passwordHash);
-                        if (passwordMatch) {
-                            const token = jwt.sign({ userID: user.userID, emailAddress: user.emailAddress });
-                            const userData = {
-                                userID: user.userID,
-                                picture: user.picture,
-                                fullName: user.fullName,
-                                emailAddress: user.emailAddress,
-                                phoneNumber: user.phoneNumber,
-                                roleID: user.roleID,
-                                lastLogin: user.lastLogin
-                            };
-                            res.json({ success: true, message: 'Login successful', token, user: userData, userID: user.userID });
-                        } else {
-                            res.status(401).json({ success: false, message: 'Incorrect email or password' });
-                        }
-                    } else {
-                        res.status(401).json({ success: false, message: 'Incorrect email or password' });
-                    }
+    
+            // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
+            const user = await getUserByEmail(emailAddress);
+    
+            if (!user) {
+                return res.status(401).json({ success: false, message: 'Email không tồn tại' });
+            }
+    
+            // Kiểm tra mật khẩu
+            const passwordMatch = await bcryptjs.compare(password, user.passwordHash);
+            if (!passwordMatch) {
+                return res.status(401).json({ success: false, message: 'Mật khẩu không đúng' });
+            }
+    
+            // Tạo token
+            const token = jwt.sign({ userID: user.userID, emailAddress: user.emailAddress }, 'your-secret-key', { expiresIn: '1h' });
+    
+            // Trả về thông tin người dùng và token
+            res.json({ 
+                success: true, 
+                message: 'Đăng nhập thành công', 
+                token, 
+                user: {
+                    userID: user.userID,
+                    picture: user.picture,
+                    fullName: user.fullName,
+                    emailAddress: user.emailAddress,
+                    phoneNumber: user.phoneNumber,
+                    roleID: user.roleID,
+                    lastLogin: user.lastLogin
                 }
             });
         } catch (error) {
-            console.error('Error during login:', error);
+            console.error('Lỗi trong quá trình đăng nhập:', error);
+            res.status(500).json({ success: false, message: 'Lỗi trong quá trình đăng nhập', details: error.message });
         }
+    },
+     getUserByEmail : async (emailAddress) => {
+        const query = "SELECT * FROM Users WHERE emailAddress = ?";
+        const [rows, fields] = await pool.query(query, [emailAddress]);
+        return rows.length > 0 ? rows[0] : null;
     },
     delete: async (req, res) => {
         try {
