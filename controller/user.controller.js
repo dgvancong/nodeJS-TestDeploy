@@ -55,12 +55,16 @@ const userController = {
         try {
             const { emailAddress, password } = req.body;
     
-            // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
-            const user = await getUserByEmail(emailAddress);
+            // Truy vấn người dùng từ cơ sở dữ liệu bằng email
+            const query = "SELECT * FROM Users WHERE emailAddress = ?";
+            const [rows, fields] = await pool.query(query, [emailAddress]);
     
-            if (!user) {
+            // Kiểm tra xem email có tồn tại không
+            if (rows.length === 0) {
                 return res.status(401).json({ success: false, message: 'Email không tồn tại' });
             }
+    
+            const user = rows[0];
     
             // Kiểm tra mật khẩu
             const passwordMatch = await bcryptjs.compare(password, user.passwordHash);
@@ -90,11 +94,6 @@ const userController = {
             console.error('Lỗi trong quá trình đăng nhập:', error);
             res.status(500).json({ success: false, message: 'Lỗi trong quá trình đăng nhập', details: error.message });
         }
-    },
-     getUserByEmail : async (emailAddress) => {
-        const query = "SELECT * FROM Users WHERE emailAddress = ?";
-        const [rows, fields] = await pool.query(query, [emailAddress]);
-        return rows.length > 0 ? rows[0] : null;
     },
     delete: async (req, res) => {
         try {
