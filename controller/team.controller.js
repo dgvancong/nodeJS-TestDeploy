@@ -30,15 +30,16 @@ const teamController = {
     create: async (req, res) => {
         try {
             const { roleName } = req.body
-            const sql = "INSERT INTO roles (roleName) VALUES (?)"
+            const sql = "INSERT INTO Team (teamName, create_at, updated_at) VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
             const [rows, fields] = await pool.query(sql, [roleName])
             res.json({
-                data: rows
+                data: rows,
+                status: "Thêm thêm vị trí chức vụ, Quyền hạn thành công"
             })
         } catch (error) {
             console.log(error)
             res.json({
-                status: "Lỗi thêm mới nhóm"
+                status: "Lỗi khi thêm vị trí chức vụ, Quyền hạn"
             })
         }
     },
