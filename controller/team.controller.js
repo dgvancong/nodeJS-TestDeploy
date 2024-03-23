@@ -45,17 +45,14 @@ const teamController = {
     },
     groupMember: async (req, res) => {
         try {
-            const { teamID, userID, roleID, joinDate } = req.body;
+            const { teamID, userID, joinDate } = req.body;
             const getRoleQuery = `SELECT u.roleID, r.roleName FROM Users u JOIN roles r ON u.roleID = r.roleID WHERE u.userID = ?`;
             const roleResult = await pool.query(getRoleQuery, [userID]);
-    
             if (roleResult.length > 0) {
                 const { roleID, roleName } = roleResult[0];
                 const addMemberQuery = `INSERT INTO TeamMembers (teamID, userID, roleID, joinDate) VALUES (?, ?, ?, ?)`;
                 await pool.query(addMemberQuery, [teamID, userID, roleID, joinDate]);
-    
                 return res.json({ message: 'Thêm thành viên vào nhóm thành công', roleName });
-                console.log(addMemberQuery);
             } else {
                 return res.status(404).json({ error: 'Không tìm thấy vai trò của người dùng' });
             }
