@@ -29,9 +29,9 @@ const teamController = {
     },
     create: async (req, res) => {
         try {
-            const { roleName } = req.body
+            const { teamName } = req.body
             const sql = "INSERT INTO Team (teamName, create_at, updated_at) VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
-            const [rows, fields] = await pool.query(sql, [roleName])
+            const [rows, fields] = await pool.query(sql, [teamName])
             res.json({
                 data: rows,
                 status: "Thêm thêm vị trí chức vụ, Quyền hạn thành công"
