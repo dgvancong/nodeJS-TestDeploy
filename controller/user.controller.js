@@ -1,5 +1,5 @@
 const pool = require("../database/dbConnect")
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 
 const userController = {
     getAll: async (req, res) => {
@@ -37,7 +37,7 @@ const userController = {
         try {
             const { picture, fullName, password, emailAddress, phoneNumber, roleID } = req.body;
             const saltRounds = 10;
-            const passwordHash = await bcrypt.hash(password, saltRounds);
+            const passwordHash = await bcryptjs.hash(password, saltRounds);
             const sql = "INSERT INTO Users (picture, fullName, passwordHash, emailAddress, phoneNumber, roleID, lastLogin, createdDate) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
             const [rows, fields] = await pool.query(sql, [picture, fullName, passwordHash, emailAddress, phoneNumber, roleID])
             res.json({
