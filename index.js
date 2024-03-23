@@ -18,4 +18,4 @@ app.use("/user", userRouter)
 
 //Cổng chạy app
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {console.log("Server is running....")})
+app.listen(PORT, () => {console.log("Hệ thống quản lý Task Master đang hoạt động....")})
