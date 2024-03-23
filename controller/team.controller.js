@@ -46,7 +46,7 @@ const teamController = {
     groupMember: async (req, res) => {
         try {
             const { teamID, userID, joinDate } = req.body;
-            const getRoleQuery = `SELECT u.roleID, r.roleName FROM Users u JOIN Roles r ON u.roleID = r.roleID WHERE u.userID = ?`;
+            const getRoleQuery = `SELECT u.roleID, r.roleName FROM Users u JOIN roles r ON u.roleID = r.roleID WHERE u.userID = ?`;
             pool.query(getRoleQuery, [userID], (roleErr, roleResult) => {
                 if (roleErr) {
                     console.error('Lỗi trong quá trình truy vấn vai trò:', roleErr);
