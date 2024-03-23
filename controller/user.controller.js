@@ -1,4 +1,6 @@
 const pool = require("../database/dbConnect")
+const bcrypt = require('bcrypt');
+
 const userController = {
     getAll: async (req, res) => {
         try {
@@ -36,16 +38,16 @@ const userController = {
             const { picture, fullName, password, emailAddress, phoneNumber, roleID } = req.body;
             const saltRounds = 10;
             const passwordHash = await bcrypt.hash(password, saltRounds);
-            const sql = "INSERT INTO Users (picture, fullName, passwordHash, emailAddress, phoneNumber, roleID, lastLogin, createdDate) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
-            const [rows, fields] = await pool.query(sql, [picture, fullName, passwordHash, emailAddress, phoneNumber, roleID])
+            const sql = "INSERT INTO Users (picture, fullName, passwordHash, emailAddress, phoneNumber, roleID, lastLogin, createdDate) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+            const [rows, fields] = await pool.query(sql, [picture, fullName, passwordHash, emailAddress, phoneNumber, roleID]);
             res.json({
                 data: rows
-            })
+            });
         } catch (error) {
-            console.log(error)
-            res.json({
+            console.log(error);
+            res.status(500).json({
                 status: "Đăng ký người dùng không thành công !!!"
-            })
+            });
         }
     },
     delete: async (req, res) => {

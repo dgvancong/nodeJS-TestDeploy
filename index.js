@@ -10,24 +10,6 @@ app.use(express.json())
 const rolesRouter = require('./routes/roles-routes')
 app.use("/roles", rolesRouter)
 
-// const commentRouter = require('./routes/comment-routes')
-// app.use("/comment", commentRouter)
-
-// const exportRouter = require('./routes/export-routes')
-// app.use("/export", exportRouter)
-
-// const importRouter = require('./routes/import-routes')
-// app.use("/import", importRouter)
-
-// const notificationsRouter = require('./routes/notifications-routes')
-// app.use("/notifications", notificationsRouter)
-
-const projectRouter = require('./routes/project-routes')
-app.use("/project", projectRouter)
-
-// const taskRouter = require('./routes/task-routes')
-// app.use("/task", taskRouter)
-
 const teamRouter = require('./routes/team-routes')
 app.use("/team", teamRouter)
 
