@@ -6,6 +6,7 @@ const teamController = require("../controller/team.controller")
 router.get("/", teamController.getAll)
 router.get("/:id", teamController.getById)
 router.post("/create", teamController.create)
+router.post("/groupmembers", teamController.groupMember)
 router.put("/update/:id", teamController.update)
 router.delete("/delete/:id", teamController.delete)
 
