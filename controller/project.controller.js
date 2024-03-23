@@ -7,9 +7,9 @@ const projectController = {
         try {
             const query = `
                 SELECT Project.*, ProjectDetails.*,
-                user.fullName AS leadFullName,
-                user.picture AS imgUser,
-                team.teamName AS teamFullName
+                Users.fullName AS leadFullName,
+                Users.picture AS imgUser,
+                Team.teamName AS teamFullName
                 FROM Project
                 LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
                 LEFT JOIN Users AS Users ON ProjectDetails.userID = Users.userID
