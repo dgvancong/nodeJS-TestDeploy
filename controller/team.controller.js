@@ -55,6 +55,7 @@ const teamController = {
                 await pool.query(addMemberQuery, [teamID, userID, roleID, joinDate]);
     
                 return res.json({ message: 'Thêm thành viên vào nhóm thành công', roleName });
+                console.log(addMemberQuery);
             } else {
                 return res.status(404).json({ error: 'Không tìm thấy vai trò của người dùng' });
             }
