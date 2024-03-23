@@ -56,8 +56,8 @@ const projectController = {
                     throw new Error(`Lỗi bắt đầu giao dịch: ${beginTransactionErr.message}`);
                 }
                 const projectQuery = `
-        INSERT INTO project (projectName, projectKey, progress, createdDate, endDate) 
-        VALUES ('${projectName}', '${projectKey}', '${progress}','${createdDate}','${endDate}')`;
+                                        INSERT INTO project (projectName, projectKey, progress, createdDate, endDate) 
+                                        VALUES ('${projectName}', '${projectKey}', '${progress}','${createdDate}','${endDate}')`;
                 db.query(projectQuery, [projectName, projectKey, progress, createdDate, endDate], (projectErr, projectResult) => {
                     try {
                         if (projectErr) {
@@ -65,16 +65,16 @@ const projectController = {
                         }
                         const projectId = projectResult.insertId;
                         const projectDetailsQuery = `
-            INSERT INTO projectDetails (projectID, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID) 
-            VALUES (${projectId},'${projectDescription}','${clientContactName}', '${clientContactEmail}','${clientContactPhone}', '${teamID}', '${userID}')`;
+                                                        INSERT INTO projectDetails (projectID, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID) 
+                                                        VALUES (${projectId},'${projectDescription}','${clientContactName}', '${clientContactEmail}','${clientContactPhone}', '${teamID}', '${userID}')`;
                         db.query(projectDetailsQuery, [projectId, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID], (detailsErr, projectDetailsResult) => {
                             try {
                                 if (detailsErr) {
                                     throw new Error(`Lỗi thực hiện truy vấn projectDetails: ${detailsErr.message}`);
                                 }
                                 const projectTeamQuery = `
-                INSERT INTO ProjectTeam (projectID, teamID, userID) 
-                VALUES (${projectId}, ${teamID}, ${userID})`;
+                                                            INSERT INTO ProjectTeam (projectID, teamID, userID) 
+                                                            VALUES (${projectId}, ${teamID}, ${userID})`;
                                 db.query(projectTeamQuery, [projectId, teamID, userID], (projectTeamErr, projectTeamResult) => {
                                     try {
                                         if (projectTeamErr) {
