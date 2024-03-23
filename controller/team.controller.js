@@ -66,7 +66,7 @@ const teamController = {
             console.error('Lỗi trong quá trình xử lý:', error);
             return res.status(500).json({ error: 'Đã xảy ra lỗi trong quá trình xử lý' });
         }
-    }
+    },
     
     
     update: async (req, res) => {
