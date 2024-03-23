@@ -55,7 +55,7 @@ const userController = {
         try {
             const { emailAddress, password } = req.body;
             const query = "SELECT * FROM Users WHERE emailAddress = ?";
-            db.query(query, [emailAddress], async (err, results) => {
+            pool.query(query, [emailAddress], async (err, results) => {
                 if (err) {
                     console.error('Error executing query:', err);
                     res.status(500).json({ success: false, message: 'Error executing query', details: err.message });
