@@ -21,8 +21,8 @@ const projectController = {
             console.error(error);
             res.status(500).send("Lỗi Server Nội Bộ");
         }
-    },    
-    
+    },
+
     getById: async (req, res) => {
         try {
             const projectId = req.params.id;
@@ -40,45 +40,98 @@ const projectController = {
                 WHERE
                     p.projectID = ?;
             `;
-            const result = await pool.query(query, [projectId]); 
+            const result = await pool.query(query, [projectId]);
             res.status(200).json(result);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-    
+
     create: async (req, res) => {
-        try {
-            const { roleName } = req.body
-            const sql = "insert into roles (roleName) values (?)"
-            const [rows, fields] = await pool.query(sql, [roleName])
-            res.json({
-                data: rows
-            })
-        } catch (error) {
-            console.log(error)
-            res.json({
-                status: "error"
-            })
-        }
+        const { projectName, projectKey, progress, createdDate, endDate, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID } = req.body;
+        db.beginTransaction((beginTransactionErr) => {
+            try {
+                if (beginTransactionErr) {
+                    throw new Error(`Lỗi bắt đầu giao dịch: ${beginTransactionErr.message}`);
+                }
+                const projectQuery = `
+        INSERT INTO project (projectName, projectKey, progress, createdDate, endDate) 
+        VALUES ('${projectName}', '${projectKey}', '${progress}','${createdDate}','${endDate}')`;
+                db.query(projectQuery, [projectName, projectKey, progress, createdDate, endDate], (projectErr, projectResult) => {
+                    try {
+                        if (projectErr) {
+                            throw new Error(`Lỗi thực hiện truy vấn dự án: ${projectErr.message}`);
+                        }
+                        const projectId = projectResult.insertId;
+                        const projectDetailsQuery = `
+            INSERT INTO projectDetails (projectID, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID) 
+            VALUES (${projectId},'${projectDescription}','${clientContactName}', '${clientContactEmail}','${clientContactPhone}', '${teamID}', '${userID}')`;
+                        db.query(projectDetailsQuery, [projectId, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID], (detailsErr, projectDetailsResult) => {
+                            try {
+                                if (detailsErr) {
+                                    throw new Error(`Lỗi thực hiện truy vấn projectDetails: ${detailsErr.message}`);
+                                }
+                                const projectTeamQuery = `
+                INSERT INTO ProjectTeam (projectID, teamID, userID) 
+                VALUES (${projectId}, ${teamID}, ${userID})`;
+                                db.query(projectTeamQuery, [projectId, teamID, userID], (projectTeamErr, projectTeamResult) => {
+                                    try {
+                                        if (projectTeamErr) {
+                                            throw new Error(`Lỗi thực hiện truy vấn ProjectTeam: ${projectTeamErr.message}`);
+                                        }
+                                        db.commit((commitErr) => {
+                                            try {
+                                                if (commitErr) {
+                                                    throw new Error(`Lỗi commit giao dịch: ${commitErr.message}`);
+                                                }
+                                                res.json({
+                                                    project: projectResult,
+                                                    projectDetails: projectDetailsResult,
+                                                    projectTeam: projectTeamResult
+                                                });
+                                            } catch (commitCatchErr) {
+                                                db.rollback(() => res.status(500).json({ error: 'Lỗi commit giao dịch', details: commitCatchErr.message }));
+                                            }
+                                        });
+                                    } catch (projectTeamCatchErr) {
+                                        db.rollback(() => res.status(500).json({ error: 'Lỗi thực hiện truy vấn ProjectTeam', details: projectTeamCatchErr.message }));
+                                    }
+                                });
+                            } catch (detailsCatchErr) {
+                                db.rollback(() => res.status(500).json({ error: 'Lỗi thực hiện truy vấn projectDetails', details: detailsCatchErr.message }));
+                            }
+                        });
+                    } catch (projectCatchErr) {
+                        db.rollback(() => res.status(500).json({ error: 'Lỗi thực hiện truy vấn dự án', details: projectCatchErr.message }));
+                    }
+                });
+            } catch (beginTransactionCatchErr) {
+                res.status(500).json({ error: 'Lỗi bắt đầu giao dịch', details: beginTransactionCatchErr.message });
+            }
+        })
     },
     update: async (req, res) => {
+        const { projectID } = req.params;
+        const { projectName, projectKey, progress, createdDate, endDate, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID } = req.body;
         try {
-            const { roleName } = req.body
-            const { id } = req.params
-            const sql = "update roles set roleName = ? where roleID = ?"
-            const [rows, fields] = await pool.query(sql, [roleName, id])
-            res.json({
-                data: rows
-            })
+            await query('START TRANSACTION');
+            await query(
+                'UPDATE Project SET projectName=?, projectKey=?, progress=?, createdDate=?, endDate=? WHERE projectID=?',
+                [projectName, projectKey, progress, createdDate, endDate, projectID]
+            );
+            await query(
+                'UPDATE ProjectDetails SET projectDescription=?, clientContactName=?, clientContactEmail=?, clientContactPhone=?, teamID=?, userID=? WHERE projectID=?',
+                [projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID, projectID]
+            );
+            await query('COMMIT');
+            res.status(200).json({ message: 'Thông tin dự án và chi tiết dự án đã được cập nhật thành công' });
         } catch (error) {
-            console.log(error)
-            res.json({
-                status: "error"
-            })
+            await query('ROLLBACK');
+            console.error('Lỗi cập nhật dự án và chi tiết dự án:', error.message);
+            res.status(500).json({ error: 'Lỗi cập nhật dự án và chi tiết dự án', details: error.message });
         }
-    }, 
+    },
     delete: async (req, res) => {
         const projectId = req.params.id;
         try {
@@ -90,7 +143,26 @@ const projectController = {
         } catch (error) {
             res.status(500).json({ error: 'Lỗi xóa dự án', details: error.message });
         }
-    }
+    },
+    projectTeam: async (req, res) => {
+        try {
+            const projectId = req.params.projectID;
+            const projectTeamQuery = `
+                SELECT ProjectTeam.*, TeamMembers.*, Users.picture, Users.fullName, Users.roleID, Team.teamName
+                FROM ProjectTeam
+                JOIN TeamMembers ON ProjectTeam.teamID = TeamMembers.teamID
+                JOIN Users ON TeamMembers.userID = Users.userID
+                JOIN Team ON TeamMembers.teamID = Team.teamID
+                WHERE ProjectTeam.projectID = ?`;
+
+            const projectTeamResult = await pool.query(projectTeamQuery, [projectId]);
+            res.json({ projectTeam: projectTeamResult });
+        } catch (error) {
+            console.error(`Lỗi thực hiện truy vấn ProjectTeam: ${error.message}`);
+            res.status(500).json({ error: 'Lỗi truy vấn ProjectTeam', details: error.message });
+        }
+    },
+
 
 }
 
