@@ -3,25 +3,6 @@ const util = require("util");
 const query = util.promisify(pool.query).bind(pool);
 
 const projectController = {
-    // getAll: async (req, res) => {
-    //     try {
-    //         const query = `
-    //             SELECT Project.*, ProjectDetails.*,
-    //             Users.fullName AS leadFullName,
-    //             Users.picture AS imgUser,
-    //             Team.teamName AS teamFullName
-    //             FROM Project
-    //             LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
-    //             LEFT JOIN Users AS Users ON ProjectDetails.userID = Users.userID
-    //             LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
-    //         `;
-    //         const result = await pool.query(query);
-    //         res.status(200).json(result);
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).send("Lỗi Server Nội Bộ");
-    //     }
-    // },
     getAll: async (req, res) => {
         try {
             const query = `
@@ -31,27 +12,17 @@ const projectController = {
                 Team.teamName AS teamFullName
                 FROM Project
                 LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
-                LEFT JOIN Users ON ProjectDetails.userID = Users.userID
-                LEFT JOIN Team ON ProjectDetails.teamID = Team.teamID
+                LEFT JOIN Users AS Users ON ProjectDetails.userID = Users.userID
+                LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
             `;
             const result = await pool.query(query);
-    
-            // Kiểm tra xem kết quả truy vấn có dữ liệu hay không
-            if (result && result.length > 0) {
-                // Trả về dữ liệu thành công dưới dạng một mảng JSON
-                res.status(200).json(result);
-            } else {
-                // Nếu không có dữ liệu, trả về thông báo lỗi
-                res.status(404).json({ message: "Không tìm thấy dữ liệu dự án" });
-            }
+            console.log(pool.query(query));
+            res.status(200).json(result);
         } catch (error) {
-            // Ghi lại lỗi vào console để dễ dàng theo dõi và gỡ lỗi
             console.error(error);
-            // Trả về thông báo lỗi 500 - Lỗi Server Nội Bộ
             res.status(500).send("Lỗi Server Nội Bộ");
         }
     },
-    
 
     getById: async (req, res) => {
         try {
