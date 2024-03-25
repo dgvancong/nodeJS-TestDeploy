@@ -186,6 +186,7 @@ const projectController = {
             }
         });
     },
+
     update: async (req, res) => {
         const { projectID } = req.params;
         const {
@@ -237,6 +238,7 @@ const projectController = {
                 });
         }
     },
+
     delete: async (req, res) => {
         const projectId = req.params.id;
         try {
@@ -254,26 +256,30 @@ const projectController = {
             res.status(500).json({ error: "Lỗi xóa dự án", details: error.message });
         }
     },
+
     projectTeam: async (req, res) => {
         try {
             const projectId = req.params.projectID;
             const projectTeamQuery = `
-                SELECT ProjectTeam.*, TeamMembers.*, Users.picture, Users.fullName, Users.roleID, Team.teamName
-                FROM ProjectTeam
-                JOIN TeamMembers ON ProjectTeam.teamID = TeamMembers.teamID
+                SELECT TeamMembers.*, Users.picture, Users.fullName, Users.roleID, Team.teamName
+                FROM TeamMembers
                 JOIN Users ON TeamMembers.userID = Users.userID
                 JOIN Team ON TeamMembers.teamID = Team.teamID
-                WHERE ProjectTeam.projectID = ?`;
-
+                WHERE TeamMembers.projectID = ?`;
+    
             const projectTeamResult = await pool.query(projectTeamQuery, [projectId]);
-            res.json({ projectTeam: projectTeamResult });
+    
+            if (projectTeamResult && projectTeamResult.length > 0) {
+                res.status(200).json({ projectTeam: projectTeamResult });
+            } else {
+                res.status(404).json({ message: "Không tìm thấy thông tin nhóm dự án" });
+            }
         } catch (error) {
             console.error(`Lỗi thực hiện truy vấn ProjectTeam: ${error.message}`);
-            res
-                .status(500)
-                .json({ error: "Lỗi truy vấn ProjectTeam", details: error.message });
+            res.status(500).json({ error: "Lỗi truy vấn ProjectTeam", details: error.message });
         }
-    },
+    }
+    
 };
 
 module.exports = projectController;
