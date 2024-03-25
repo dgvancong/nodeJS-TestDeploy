@@ -54,28 +54,17 @@ const userController = {
     login: async (req, res) => {
         try {
             const { emailAddress, password } = req.body;
-    
-            // Truy vấn người dùng từ cơ sở dữ liệu bằng email
             const query = "SELECT * FROM Users WHERE emailAddress = ?";
             const [rows, fields] = await pool.query(query, [emailAddress]);
-    
-            // Kiểm tra xem email có tồn tại không
             if (rows.length === 0) {
                 return res.status(401).json({ success: false, message: 'Email không tồn tại' });
             }
-    
             const user = rows[0];
-    
-            // Kiểm tra mật khẩu
             const passwordMatch = await bcryptjs.compare(password, user.passwordHash);
             if (!passwordMatch) {
                 return res.status(401).json({ success: false, message: 'Mật khẩu không đúng' });
             }
-    
-            // Tạo token
             const token = jwt.sign({ userID: user.userID, emailAddress: user.emailAddress }, 'your-secret-key', { expiresIn: '1h' });
-    
-            // Trả về thông tin người dùng và token
             res.json({ 
                 success: true, 
                 message: 'Đăng nhập thành công', 
