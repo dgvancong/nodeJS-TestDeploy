@@ -16,7 +16,6 @@ const projectController = {
                 LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
             `;
             const result = await pool.query(query);
-            console.log(pool.query(query));
             res.status(200).json(result);
         } catch (error) {
             console.error(error);
