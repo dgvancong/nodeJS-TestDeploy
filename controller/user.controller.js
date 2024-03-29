@@ -91,7 +91,7 @@ const userController = {
             const userLoginQuery = `
                 SELECT Users.*, roles.roleName
                 FROM Users
-                JOIN Roles ON Users.roleID = roles.roleID
+                JOIN roles ON Users.roleID = roles.roleID
                 WHERE Users.userID = ?`;
 
             const [userLoginResult] = await pool.query(userLoginQuery, [userId]);
