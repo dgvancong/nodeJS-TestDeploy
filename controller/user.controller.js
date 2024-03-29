@@ -84,6 +84,24 @@ const userController = {
             res.status(500).json({ success: false, message: 'Lỗi trong quá trình đăng nhập', details: error.message });
         }
     },
+    userlogin: async (req, res) =>{
+        try {
+            const userId = req.params.userID;
+
+            const userLoginQuery = `
+                SELECT Users.*, roles.roleName
+                FROM Users
+                JOIN Roles ON Users.roleID = roles.roleID
+                WHERE Users.userID = ?`;
+
+            const [userLoginResult] = await pool.query(userLoginQuery, [userId]);
+
+            res.json({ userLogin: userLoginResult });
+        } catch (error) {
+            console.error(`Lỗi truy vấn UserLogin: ${error.message}`);
+            res.status(500).json({ error: 'Lỗi truy vấn UserLogin', details: error.message });
+        }
+    },
     delete: async (req, res) => {
         try {
             const { id } = req.params
