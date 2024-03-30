@@ -77,7 +77,8 @@ const userController = {
                     phoneNumber: user.phoneNumber,
                     roleID: user.roleID,
                     lastLogin: user.lastLogin
-                }
+                },
+                userID : user.userID,
             });
         } catch (error) {
             console.error('Lỗi trong quá trình đăng nhập:', error);
