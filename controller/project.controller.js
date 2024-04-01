@@ -16,7 +16,7 @@ const projectController = {
                 LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
             `;
             const result = await pool.query(query);
-            res.status(200);
+            res.status(200).json(result);
         } catch (error) {
             res.status(500).send("Lỗi Server Nội Bộ");
         }
