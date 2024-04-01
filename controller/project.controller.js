@@ -16,15 +16,19 @@ const projectController = {
                 LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
             `;
             const result = await pool.query(query);
-            const jsonData = result.map(row => {
-                const dataString = row.data.toString('utf-8');
-                return JSON.parse(dataString);
-            });
-            res.status(200).json(jsonData);
+    
+            // Kiểm tra xem kết quả có dữ liệu không
+            if (result && result.length > 0) {
+                res.status(200).json(result);
+            } else {
+                res.status(404).send("Không tìm thấy dữ liệu");
+            }
         } catch (error) {
+            console.error("Lỗi khi truy vấn cơ sở dữ liệu:", error);
             res.status(500).send("Lỗi Server Nội Bộ");
         }
     },
+    
 
     getById: async (req, res) => {
         try {
