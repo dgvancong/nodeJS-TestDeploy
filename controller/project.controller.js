@@ -267,7 +267,7 @@ const projectController = {
               WHERE ProjectTeam.projectID = ?`;
         
             const projectTeamResult = await new Promise((resolve, reject) => {
-              db.query(projectTeamQuery, [projectId], (error, result) => {
+                pool.query(projectTeamQuery, [projectId], (error, result) => {
                 if (error) {
                   reject(new Error(`Lỗi thực hiện truy vấn ProjectTeam: ${error.message}`));
                 } else {
