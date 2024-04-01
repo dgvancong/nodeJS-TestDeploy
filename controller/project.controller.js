@@ -16,10 +16,9 @@ const projectController = {
                 LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
             `;
             const result = await pool.query(query);
-            console.error(err);
-            res.status(500).send("Lỗi Server Nội Bộ");
-        } catch (error) {
             res.status(200).json(result);
+        } catch (error) {
+            res.status(500).send("Lỗi Server Nội Bộ");
         }
     },
 
@@ -41,10 +40,9 @@ const projectController = {
                     p.projectID = ?;
             `;
             const result = await pool.query(query, [projectId]);
-            console.error(error);
-            res.status(500).json({ error: "Internal Server Error" });
+            res.status(200).json(result);
         } catch (error) {
-            res.status(200).json(result);        
+            res.status(500).json({ error: "Internal Server Error" });
         }
     },
 
@@ -70,8 +68,8 @@ const projectController = {
                     );
                 }
                 const projectQuery = `
-                    INSERT INTO project (projectName, projectKey, progress, createdDate, endDate) 
-                    VALUES ('${projectName}', '${projectKey}', '${progress}','${createdDate}','${endDate}')`;
+                                        INSERT INTO project (projectName, projectKey, progress, createdDate, endDate) 
+                                        VALUES ('${projectName}', '${projectKey}', '${progress}','${createdDate}','${endDate}')`;
                 db.query(
                     projectQuery,
                     [projectName, projectKey, progress, createdDate, endDate],
@@ -84,8 +82,8 @@ const projectController = {
                             }
                             const projectId = projectResult.insertId;
                             const projectDetailsQuery = `
-                                INSERT INTO projectDetails (projectID, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID) 
-                                VALUES (${projectId},'${projectDescription}','${clientContactName}', '${clientContactEmail}','${clientContactPhone}', '${teamID}', '${userID}')`;
+                                                        INSERT INTO projectDetails (projectID, projectDescription, clientContactName, clientContactEmail, clientContactPhone, teamID, userID) 
+                                                        VALUES (${projectId},'${projectDescription}','${clientContactName}', '${clientContactEmail}','${clientContactPhone}', '${teamID}', '${userID}')`;
                             db.query(
                                 projectDetailsQuery,
                                 [
@@ -105,8 +103,8 @@ const projectController = {
                                             );
                                         }
                                         const projectTeamQuery = `
-                                            INSERT INTO ProjectTeam (projectID, teamID, userID) 
-                                            VALUES (${projectId}, ${teamID}, ${userID})`;
+                                                            INSERT INTO ProjectTeam (projectID, teamID, userID) 
+                                                            VALUES (${projectId}, ${teamID}, ${userID})`;
                                         db.query(
                                             projectTeamQuery,
                                             [projectId, teamID, userID],
