@@ -16,8 +16,11 @@ const projectController = {
                 LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
             `;
             const result = await pool.query(query);
-            console.log(result)
-            res.status(200).json(result);
+            const jsonData = result.map(row => {
+                const dataString = row.data.toString('utf-8');
+                return JSON.parse(dataString);
+            });
+            res.status(200).json(jsonData);
         } catch (error) {
             res.status(500).send("Lỗi Server Nội Bộ");
         }
