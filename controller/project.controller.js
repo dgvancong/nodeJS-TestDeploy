@@ -3,7 +3,7 @@ const util = require("util");
 const query = util.promisify(pool.query).bind(pool);
 
 const projectController = {
-    getAll: function (req, res) {
+    getAll: async (req, res) => {
         const query = `
             SELECT project.*, projectDetails.*,
             user.fullName AS leadFullName ,
@@ -14,7 +14,7 @@ const projectController = {
             LEFT JOIN Users AS user ON projectDetails.userID = user.userID
             LEFT JOIN Team AS team ON projectDetails.teamID = team.teamID
         `;
-        db.query(query, function(err, result) {
+        db.query(query, async(err, result) => {
             if (err) {
                 console.error(err);
                 res.status(500).send("Lỗi Server Nội Bộ");
