@@ -17,6 +17,7 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
 // Phần router hệ thống Task Master
+
 const rolesRouter = require('./routes/roles-routes')
 app.use("/roles", rolesRouter)
 
@@ -28,6 +29,9 @@ app.use("/user", userRouter)
 
 const projectRouter = require('./routes/project-routes')
 app.use("/project", projectRouter)
+
+const taskRouter = require('./routes/task-routes')
+app.use("/task", taskRouter)
 
 //Cổng chạy app
 app.listen(port, () => {
