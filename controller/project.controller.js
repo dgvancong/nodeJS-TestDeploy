@@ -4,24 +4,25 @@ const query = util.promisify(pool.query).bind(pool);
 
 const projectController = {
     getAll: async (req, res) => {
-        const query = `
-            SELECT project.*, projectDetails.*,
-            user.fullName AS leadFullName ,
-            user.picture AS imgUser ,
-            team.teamName AS teamFullName
-            FROM project
-            LEFT JOIN projectDetails ON project.projectID = projectDetails.projectID
-            LEFT JOIN Users AS user ON projectDetails.userID = user.userID
-            LEFT JOIN Team AS team ON projectDetails.teamID = team.teamID
-        `;
-        pool.query(query, function(err, result) {
-            if (err) {
-                console.error(err);
-                res.status(500).send("Lỗi Server Nội Bộ");
-            } else {
-                res.status(200).json(result);
-            }
-        });
+        try {
+            const [rows, fields] = await pool.query (`
+            SELECT Project.*, ProjectDetails.*,
+                Users.fullName AS leadFullName,
+                Users.picture AS imgUser,
+                Team.teamName AS teamFullName
+                FROM Project
+                LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
+                LEFT JOIN Users AS Users ON ProjectDetails.userID = Users.userID
+                LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
+            `)
+            res.json({
+                data: rows
+            })
+        } catch (error) {
+            res.json({
+                status: "Lỗi khi lấy dữ liệu của bảng Roles"
+            })
+        }
     },
 
     getById: async (req, res) => {
