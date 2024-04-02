@@ -6,21 +6,41 @@ const projectController = {
     getAll: async (req, res) => {
         try {
             const query = `
-            SELECT Project.projectID, Project.projectName, Project.progress, Project.createdDate, Project.endDate,
-            Project.projectDescription, ProjectDetails.userID, Users.fullName AS leadFullName,
-            Users.picture AS imgUser, ProjectDetails.teamID, Team.teamName AS teamFullName
-            FROM Project
-            LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
-            LEFT JOIN Users ON ProjectDetails.userID = Users.userID
-            LEFT JOIN Team ON ProjectDetails.teamID = Team.teamID;
-     
+                SELECT 
+                    Project.projectID,
+                    Project.projectName,
+                    Project.progress,
+                    Project.createdDate,
+                    Project.endDate,
+                    Project.projectDescription,
+                    Users.fullName AS leadFullName,
+                    Users.picture AS imgUser,
+                    Team.teamName AS teamFullName
+                FROM 
+                    Project
+                    LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
+                    LEFT JOIN Users ON ProjectDetails.userID = Users.userID
+                    LEFT JOIN Team ON ProjectDetails.teamID = Team.teamID
             `;
             const result = await pool.query(query);
-            res.status(200).json(result);
+            // Xử lý dữ liệu trả về từ câu truy vấn SQL để tạo thành một mảng mới
+            const formattedData = result.map(item => ({
+                projectID: item.projectID,
+                projectName: item.projectName,
+                progress: item.progress,
+                createdDate: item.createdDate,
+                endDate: item.endDate,
+                projectDescription: item.projectDescription,
+                leadFullName: item.leadFullName,
+                imgUser: item.imgUser,
+                teamFullName: item.teamFullName
+            }));
+            res.status(200).json(formattedData);
         } catch (error) {
             res.status(500).send("Lỗi Server Nội Bộ");
         }
     },
+    
 
     getById: async (req, res) => {
         try {
