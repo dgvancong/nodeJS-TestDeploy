@@ -27,8 +27,8 @@ const projectController = {
 
     getById: async (req, res) => {
         try {
-            const projectId = req.params.id;
-            const query = `
+            const { id } = req.params
+            const [rows, fields] = await pool.query ( `
                 SELECT
                     p.*,
                     pd.*,
@@ -41,11 +41,14 @@ const projectController = {
                     Users u ON pd.userID = u.userID
                 WHERE
                     p.projectID = ?;
-            `;
-            const result = await pool.query(query, [projectId]);
-            res.status(200).json(result);
+            `, [id]);
+            res.json({
+                data: rows
+            })
         } catch (error) {
-            res.status(500).json({ error: "Internal Server Error" });
+            res.json({
+                status: "Lỗi khi lấy dữ liệu Project"
+            })
         }
     },
 
