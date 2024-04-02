@@ -20,7 +20,7 @@ const projectController = {
             })
         } catch (error) {
             res.json({
-                status: "Lỗi khi lấy dữ liệu của bảng Roles"
+                status: "Lỗi khi lấy dữ liệu của dự án"
             })
         }
     },
@@ -48,7 +48,7 @@ const projectController = {
         } catch (error) {
             console.log(error)
             res.json({
-                status: "Lỗi khi lấy dữ liệu Project"
+                status: "Lỗi khi lấy dữ liệu dự án"
             })
         }
     },
