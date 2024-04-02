@@ -6,14 +6,14 @@ const projectController = {
     getAll: async (req, res) => {
         try {
             const query = `
-                SELECT Project.*, ProjectDetails.*,
-                Users.fullName AS leadFullName,
-                Users.picture AS imgUser,
-                Team.teamName AS teamFullName
-                FROM Project
-                LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
-                LEFT JOIN Users AS Users ON ProjectDetails.userID = Users.userID
-                LEFT JOIN Team AS Team ON ProjectDetails.teamID = Team.teamID
+            SELECT Project.projectID, Project.projectName, Project.progress, Project.createdDate, Project.endDate,
+            Project.projectDescription, ProjectDetails.userID, Users.fullName AS leadFullName,
+            Users.picture AS imgUser, ProjectDetails.teamID, Team.teamName AS teamFullName
+            FROM Project
+            LEFT JOIN ProjectDetails ON Project.projectID = ProjectDetails.projectID
+            LEFT JOIN Users ON ProjectDetails.userID = Users.userID
+            LEFT JOIN Team ON ProjectDetails.teamID = Team.teamID;
+     
             `;
             const result = await pool.query(query);
             res.status(200).json(result);
