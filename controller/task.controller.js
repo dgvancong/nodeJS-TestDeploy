@@ -3,23 +3,27 @@ const taskController = {
 
     getAll: async (req, res) => {
         try {
-            const query = `
+            const [rows, fields] = await pool.query (`
                 SELECT Task.*, Project.projectName, Users.fullName 
                 FROM Task 
                 JOIN Project ON Task.projectID = Project.projectID 
-                JOIN Users ON Task.userID = Users.userID`;
-            const result = await pool.query(query);
-            res.status(200).json(result);
+                JOIN Users ON Task.userID = Users.userID`
+            );
+            res.json({
+                data: rows
+            })
         } catch (error) {
-            console.error(error);
-            res.status(500).send("Lỗi Server Nội Bộ");
+            res.json({
+                status: "Lỗi khi lấy dữ liệu của bảng Task"
+            })
         }
     },
     
     getById: async (req, res) => {
         try {
-            const projectId = req.params.id;
-            const query = `
+            const { id } = req.params
+            const [rows, fields] = await pool.query(
+                `
                 SELECT
                     p.*,
                     pd.*,
@@ -38,12 +42,14 @@ const taskController = {
                     Users u ON pd.userID = u.userID
                 WHERE
                     p.projectID = ?;
-            `;
-            const result = await pool.query(query, [projectId]);
-            res.status(200).json(result);
+            `, [id]);
+            res.json({
+                data: rows
+            })
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Lỗi máy chủ nội bộ' });
+            res.json({
+                status: "Lỗi khi lấy dữ liệu Task"
+            })
         }
     },
 
