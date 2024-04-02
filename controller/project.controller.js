@@ -46,6 +46,7 @@ const projectController = {
                 data: rows
             })
         } catch (error) {
+            console.log(error)
             res.json({
                 status: "Lỗi khi lấy dữ liệu Project"
             })
